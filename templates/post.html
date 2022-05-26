@@ -1,0 +1,81 @@
+{% if current_user.is_authenticated %}
+
+{% include "header.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+
+
+<!-- Page Header -->
+<header class="masthead" style="background-image: url('{{post.img_url}}')">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				<div class="post-heading">
+					<h1>{{post.title}}</h1>
+					<h2 class="subheading">{{post['subtitle']}}</h2>
+					<span class="meta">Posted
+              on {{post.date}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+<br>
+{% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+         <p>{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+<br>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <p>
+              {{ post.body|safe }}
+          </p>
+           <hr>
+            {% if current_user.id == 1: %}
+           <div class="clearfix">
+          <a class="btn btn-primary float-right" href="{{url_for('edit_post', post_id=post['id'], is_edit=True)}}">Edit Post</a>
+        </div>
+            {% endif %}
+             <!--           Comments Area -->
+
+                 <!--           Comments Area -->
+
+                {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "warning"}) }}
+
+
+                <div class="col-lg-8 col-md-10 mx-auto comment">
+                    {% for comment in post_comments: %}
+                    <ul class="commentList" style="margin-left:-150px;">
+                        <li>
+                            <div class="commenterImage">
+                                <img src="{{ comment.comment_author.email | gravatar }}"/>
+                            </div>
+                            <div class="commentText">
+                                {{comment.text|safe}}
+                                <span class="date sub-text">{{comment.comment_author.name}}</span>
+                                 {% if current_user.id == 1 or current_user.name==comment.comment_author.name: %}
+          <a href="{{url_for('delete_comment', comment_id=comment.id, post_id=post.id)}}"> ✘ </a>
+          {% endif %}
+                            </div>
+                        </li>
+                    </ul>
+                    {% endfor %}
+                </div>
+      </div>
+    </div>
+    </div>
+  </article>
+
+  <hr> <br>
+<a href="{{url_for('get_all_posts')}}" class="btn btn-sm btn-danger" style="margin: 20px;"> Back to Home </a> <br>
+{% include "footer.html" %}
+{% endif %}
