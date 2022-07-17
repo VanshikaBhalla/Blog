@@ -178,7 +178,7 @@ def logout():
     return redirect(url_for('.get_all_posts'))
 
 
-@app.route('/Blog', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def get_all_posts():
     return render_template("index.html", all_posts=posts, year=date.year)
 
